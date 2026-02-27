@@ -29,7 +29,7 @@ Content-Type: {{contentType}}
 }
 
 ### Actualizar película
-PATCH {{baseUrl}}/movies/69a17f7274adead1efad26da HTTP/1.1
+PATCH {{baseUrl}}/movies/69a19d41ecaa76e5ba091014 HTTP/1.1
 Content-Type: {{contentType}}
 
 {
@@ -47,13 +47,14 @@ PUT {{baseUrl}}/movies/69a17f7274adead1efad26da/rent HTTP/1.1
 PUT {{baseUrl}}/movies/69a17f7274adead1efad26da/return HTTP/1.1
 
 ### Subir o reemplazar carátula
-POST {{baseUrl}}/movies/69a17f7274adead1efad26da/upload-cover HTTP/1.1
+### Subir carátula a una película
+POST {{baseUrl}}/movies/69a19d41ecaa76e5ba091014/cover
 Content-Type: multipart/form-data
-Content-Disposition: form-data; name="cover"; filename="matrix.png"
-Content-Type: image/png
-### Para subir archivos usa curl:
 
-curl -X POST http://localhost:3000/api/storage -F "file=@C:/Users/liyin/Downloads/yipee.png"
+cover: ./test-cover.jpg
+### CURL
+curl -X POST http://localhost:3000/api/movies/69a19d41ecaa76e5ba091014/cover \
+-F "cover=@./test-cover.jpg"
 ### Top 5 películas más alquiladas
 GET {{baseUrl}}/movies/top HTTP/1.1
 @baseUrl = http://localhost:3000/api

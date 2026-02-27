@@ -102,15 +102,16 @@ export const returnMovie = async (req,res) => {
     res.status(200).json({ data: movie });
 }
 
-export const uploadCover = async (req,res) => {
-    const movie = await Movie.findById(req.params.id);
+export const uploadCover = async (req, res) => {
+  if (!req.file) return handleHttpError(res, 'Archivo no encontrado', 400);
 
-    if (!movie) {
-      return handleHttpError(res, 'Película no encontrada', 404);
-    }
+  const movie = await Movie.findById(req.params.id);
+  if (!movie) return handleHttpError(res, 'Película no encontrada', 404);
 
-    movie.cover = req.file.filename;
-    res.status(200).json({ data: movie });
+  movie.cover = req.file.filename;
+  await movie.save();
+
+  res.status(200).json({ data: movie });
 }
 
 export const getCover = async (req,res) => {
