@@ -111,7 +111,15 @@ export const uploadCover = async (req,res) => {
     res.status(200).json({ data: movie });
 }
 
-//export const getCover = async (req,res) => {} por ahora hacer el resto
+export const getCover = async (req,res) => {
+    const movie = await Movie.findById(req.params.id);
+
+    if (!movie) {
+      return handleHttpError(res, 'Película no encontrada', 404);
+    }
+
+    res.status(200).sendFile(movie.cover);
+}
 
 export const topMovies = async (req,res) => {
     const movies = await Movie.find().sort({ timesRented: -1 }).limit(5);

@@ -25,9 +25,6 @@ const fileFilter = (req, file, cb) => {
     'image/png',
     'image/gif',
     'image/webp',
-    'audio/mpeg',
-    'audio/wav',
-    'application/pdf'
   ];
   
   if (allowedMimes.includes(file.mimetype)) {
@@ -42,7 +39,7 @@ const uploadMiddleware = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024,  // 10MB
+    fileSize: 5 * 1024 * 1024,  // 5MB
     files: 5                      // Máximo 5 archivos
   }
 });
