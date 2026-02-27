@@ -4,6 +4,9 @@ const objectIdSchema = z
   .string()
   .regex(/^[0-9a-fA-F]{24}$/, 'ID no válido');
 
+  // no me iban poniendolo directamente
+const genreEnum = z.enum(['action', 'comedy', 'drama', 'horror', 'scifi']);
+
 export const createMovieSchema = z.object({
   body: z.object({
     title: z
@@ -14,9 +17,7 @@ export const createMovieSchema = z.object({
     year: z
       .number({ required_error: 'El año es requerido' })
       .min(1888, 'Año no válido'),
-    genre: z
-      .string({ required_error: 'El género es requerido' })
-      .enum(['action', 'comedy', 'drama', 'horror', 'scifi']),
+    genre: genreEnum,
     copies: z
       .number()
       .int('Debe ser un número entero')
@@ -49,9 +50,7 @@ export const updateMovieSchema = z.object({
       .string().optional(),
     year: z
       .number().min(1888, 'Año no válido').optional(),
-    genre: z
-      .string()
-      .enum(['action', 'comedy', 'drama', 'horror', 'scifi']).optional(),
+    genre: genreEnum.optional(),
     copies: z
       .number().int().min(0).optional(),
     availableCopies: z

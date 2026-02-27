@@ -12,7 +12,7 @@ import {
   topMovies
 } from '../controllers/movies.controller.js';
 import { validate, validateObjectId } from '../middleware/validate.middleware.js';
-import { createMovieSchema, updateMovieSchema, getMovieSchema } from '../schemas/user.schema.js';
+import { createMovieSchema, updateMovieSchema, getMovieSchema } from '../schemas/movie.schema.js';
 
 const router = Router();
 
