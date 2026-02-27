@@ -59,7 +59,7 @@ export const updateMovie = async (req, res) => {
     return handleHttpError(res, 'Película no encontrado', 404);
   }
   
-  res.json({ data: user });
+  res.json({ data: movie });
 };
 
 // DELETE /api/movie/:id
@@ -72,3 +72,48 @@ export const deleteMovie = async (req, res) => {
   
   res.status(204).send();
 };
+
+export const rentMovie = async (req,res) => {
+    const movie = await Movie.findById(req.params.id);
+
+    if (!movie) {
+      return handleHttpError(res, 'Película no encontrada', 404);
+    }
+
+    // reducir el numero de copias disponibles y de las veces que ha sido rentado
+    movie.availableCopies -= 1;
+    movie.timesRented += 1;
+
+    res.status(200).json({ data: movie });
+}
+
+export const returnMovie = async (req,res) => {
+    const movie = await Movie.findById(req.params.id);
+
+    if (!movie) {
+      return handleHttpError(res, 'Película no encontrada', 404);
+    }
+
+    // aumentar el numero de copias disponibles
+    movie.availableCopies += 1;
+
+    res.status(200).json({ data: movie });
+}
+
+export const uploadCover = async (req,res) => {
+    const movie = await Movie.findById(req.params.id);
+
+    if (!movie) {
+      return handleHttpError(res, 'Película no encontrada', 404);
+    }
+
+    movie.cover = req.file.filename;
+    res.status(200).json({ data: movie });
+}
+
+//export const getCover = async (req,res) => {} por ahora hacer el resto
+
+export const topMovies = async (req,res) => {
+    const movies = await Movie.find().sort({ timesRented: -1 }).limit(5);
+    res.json({ data: movies });
+}
