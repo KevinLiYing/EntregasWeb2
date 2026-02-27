@@ -47,7 +47,13 @@ const movieSchema = new mongoose.Schema(
     cover: {
       type: String,
       default: null
-    }
+    },
+    rating: {
+      type: Number,
+      min: [0, 'El rating mínimo es 0'],
+      max: [5, 'El rating máximo es 5'],
+      default: 0
+}
 
   },
   {

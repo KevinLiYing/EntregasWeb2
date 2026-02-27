@@ -5,11 +5,12 @@ const PUBLIC_URL = process.env.PUBLIC_URL || 'http://localhost:3000';
 
 // GET /api/movies
 export const getMovies = async (req, res) => {
-  const { page = 1, limit = 10, genre } = req.query;
+  const { page = 1, limit = 10, genre, search } = req.query;
   
   // Filtro dinámico
   const filter = {};
   if (genre) filter.genre = genre;
+  if (search) filter.title = { $regex: search, $options: 'i' };
   
   const skip = (Number(page) - 1) * Number(limit);
   
@@ -128,3 +129,41 @@ export const topMovies = async (req,res) => {
     const movies = await Movie.find().sort({ timesRented: -1 }).limit(5);
     res.json({ data: movies });
 }
+
+// GET /api/movies/available
+export const getAvailableMovies = async (req, res) => {
+  const { page = 1, limit = 10, genre, search } = req.query;
+
+  // Filtrar para ver si hay copias disponibles
+  const filter = {
+    availableCopies: { $gt: 0 }
+  };
+
+  if (genre) {
+    filter.genre = genre;
+  }
+
+  if (search) {
+    filter.title = { $regex: search, $options: 'i' };
+  }
+
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const [movies, total] = await Promise.all([
+    Movie.find(filter)
+      .skip(skip)
+      .limit(Number(limit))
+      .sort({ createdAt: -1 }),
+    Movie.countDocuments(filter)
+  ]);
+
+  res.json({
+    data: movies,
+    pagination: {
+      page: Number(page),
+      limit: Number(limit),
+      total,
+      pages: Math.ceil(total / Number(limit))
+    }
+  });
+};

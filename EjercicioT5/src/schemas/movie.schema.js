@@ -35,6 +35,11 @@ export const createMovieSchema = z.object({
       .default(0),
       // 
     cover: z.string().optional().nullable(),
+    rating: z
+      .number()
+      .min(0, 'El rating mínimo es 0')
+      .max(5, 'El rating máximo es 5')
+      .default(0)
   })
 });
 
@@ -57,6 +62,11 @@ export const updateMovieSchema = z.object({
       .number().int().min(0).optional(),
     timesRented: z.number().int().min(0).optional(),
     cover: z.string().url().optional().nullable(),
+    rating: z
+      .number()
+      .min(0, 'El rating mínimo es 0')
+      .max(5, 'El rating máximo es 5')
+      .optional(),
   }).refine(
     (data) => Object.keys(data).length > 0,
     { message: 'Debe proporcionar al menos un campo' }

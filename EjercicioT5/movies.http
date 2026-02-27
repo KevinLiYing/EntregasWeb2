@@ -43,18 +43,43 @@ DELETE {{baseUrl}}/movies/69a02b17129b0620c0063f00 HTTP/1.1
 ### Alquilar película
 PUT {{baseUrl}}/movies/69a17f7274adead1efad26da/rent HTTP/1.1
 
+### Buscar películas por título
+GET {{baseUrl}}/movies?search=Matrix HTTP/1.1
+
+### Actualizar rating de una película
+PATCH {{baseUrl}}/movies/69a19d41ecaa76e5ba091014
+Content-Type: application/json
+
+{
+  "rating": 4.5
+}
 ### Devolver película
 PUT {{baseUrl}}/movies/69a17f7274adead1efad26da/return HTTP/1.1
 
 ### Subir o reemplazar carátula
 ### Subir carátula a una película
-POST {{baseUrl}}/movies/69a19d41ecaa76e5ba091014/cover
-Content-Type: multipart/form-data
+### Subir carátula a una película
 
-cover: ./test-cover.jpg
+POST {{baseUrl}}/movies/{69a1a022e93ec93cc25a4988}/cover
+
+Content-Type: multipart/form-data; boundary=boundary
+
+
+
+--boundary
+
+Content-Disposition: form-data; name="cover"; filename="cover.jpg"
+
+Content-Type: image/jpeg
+
+
+
+< ./test-cover.jpg
+
+--boundary--
 ### CURL
-curl -X POST http://localhost:3000/api/movies/69a19d41ecaa76e5ba091014/cover \
--F "cover=@./test-cover.jpg"
+//curl -X POST http://localhost:3000/api/movies/69a19d41ecaa76e5ba091014/cover \ 
+//-F "cover=@./test-cover.jpg"
 ### Top 5 películas más alquiladas
 GET {{baseUrl}}/movies/top HTTP/1.1
 @baseUrl = http://localhost:3000/api
