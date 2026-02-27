@@ -1,6 +1,8 @@
 import Movie from '../models/movie.model.js';
 import { handleHttpError } from '../utils/handleError.js';
 
+const PUBLIC_URL = process.env.PUBLIC_URL || 'http://localhost:3000';
+
 // GET /api/movies
 export const getMovies = async (req, res) => {
   const { page = 1, limit = 10, genre } = req.query;
@@ -47,7 +49,7 @@ export const createMovie = async (req, res) => {
   res.status(201).json({ data: movie });
 };
 
-// PUT /api/movies/:id
+// PATCH /api/movies/:id
 export const updateMovie = async (req, res) => {
   const movie = await Movie.findByIdAndUpdate(
     req.params.id,

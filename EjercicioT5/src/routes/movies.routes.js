@@ -1,5 +1,6 @@
 // src/routes/users.routes.js
 import { Router } from 'express';
+import uploadMiddleware from '../utils/handleStorage.js';
 import {
   getMovies,
   getMovie,
@@ -19,11 +20,12 @@ const router = Router();
 router.get('/', getMovies);
 router.get('/:id', validateObjectId(), getMovie);
 router.post('/', validate(createMovieSchema), createMovie);
-router.put('/:id', validate(updateMovieSchema), updateMovie);
+router.patch('/:id', validate(updateMovieSchema), updateMovie);
 router.delete('/:id', validateObjectId(), deleteMovie);
 router.put('/:id/rent', rentMovie);
 router.put('/:id/return', returnMovie);
 router.post('/:id/upload-cover', uploadCover);
 router.get('/top', topMovies);
 
+router.post('/', uploadMiddleware.single('file'), uploadFile);
 export default router;

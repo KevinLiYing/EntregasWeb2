@@ -1,113 +1,120 @@
 ### ==========================================
-### T5 - API REST MVC MongoDB
+### MOVIES API - TEST - este http ha sido hecho con IA
 ### ==========================================
 
 @baseUrl = http://localhost:3000/api
 @contentType = application/json
 
 ### ==========================================
-### HEALTH CHECK
-### ==========================================
+### Listar todas las películas
+GET {{baseUrl}}/movies HTTP/1.1
 
-GET http://localhost:3000/health HTTP/1.1
+### Listar películas filtrando por género
+GET {{baseUrl}}/movies?genre=comedy HTTP/1.1
 
-### ==========================================
-### USERS
-### ==========================================
+### Obtener película por ID (reemplazar con ID real)
+GET {{baseUrl}}/movies/69a17f7274adead1efad26da HTTP/1.1
 
-### Listar usuarios
-GET {{baseUrl}}/users HTTP/1.1
-
-### Listar con paginación
-GET {{baseUrl}}/users?page=1&limit=5 HTTP/1.1
-
-### Filtrar por rol
-GET {{baseUrl}}/users?role=admin HTTP/1.1
-
-### Obtener usuario por ID (reemplazar con ID real)
-GET {{baseUrl}}/users/69a02acec1cf07a3b1f8c82f HTTP/1.1
-
-### Crear usuario
-POST {{baseUrl}}/users HTTP/1.1
+### Crear película
+POST {{baseUrl}}/movies HTTP/1.1
 Content-Type: {{contentType}}
 
 {
-  "name": "Juan Pérez",
-  "email": "juan@ejemplo.com",
-  "password": "MiPassword123"
+  "title": "Matrix",
+  "director": "Lana Wachowski",
+  "year": 1999,
+  "genre": "scifi",
+  "copies": 5,
+  "availableCopies": 5
 }
 
-### Actualizar usuario
-PUT {{baseUrl}}/users/69a02acec1cf07a3b1f8c82f HTTP/1.1
+### Actualizar película
+PATCH {{baseUrl}}/movies/69a17f7274adead1efad26da HTTP/1.1
 Content-Type: {{contentType}}
 
 {
-  "name": "Juan Pérez Actualizado",
-  "role": "admin"
+  "title": "Matrix Reloaded",
+  "copies": 10
 }
 
-### Eliminar usuario
-DELETE {{baseUrl}}/users/69a02acec1cf07a3b1f8c82f HTTP/1.1
+### Eliminar película
+DELETE {{baseUrl}}/movies/69a02b17129b0620c0063f00 HTTP/1.1
 
-### ==========================================
-### TRACKS
-### ==========================================
+### Alquilar película
+PUT {{baseUrl}}/movies/69a17f7274adead1efad26da/rent HTTP/1.1
 
-### Listar tracks
-GET {{baseUrl}}/tracks HTTP/1.1
+### Devolver película
+PUT {{baseUrl}}/movies/69a17f7274adead1efad26da/return HTTP/1.1
 
-### Top tracks
-GET {{baseUrl}}/tracks/top?limit=5 HTTP/1.1
-
-### Filtrar por género
-GET {{baseUrl}}/tracks?genre=rock HTTP/1.1
-
-### Obtener track por ID
-GET {{baseUrl}}/tracks/69a02b17129b0620c0063f00 HTTP/1.1
-
-### Crear track (reemplazar artist con ID de usuario real)
-POST {{baseUrl}}/tracks HTTP/1.1
-Content-Type: {{contentType}}
-
-{
-  "title": "Mi Primera Canción",
-  "artist": "507f1f77bcf86cd799439011",
-  "duration": 210,
-  "genres": ["pop", "rock"]
-}
-
-### Registrar reproducción
-POST {{baseUrl}}/tracks/69a02b17129b0620c0063f00/play HTTP/1.1
-
-### Dar like
-POST {{baseUrl}}/tracks/69a02b17129b0620c0063f00/like HTTP/1.1
-
-### Actualizar track
-PUT {{baseUrl}}/tracks/507f1f77bcf86cd799439011 HTTP/1.1
-Content-Type: {{contentType}}
-
-{
-  "title": "Título Actualizado",
-  "genres": ["jazz"]
-}
-
-### Eliminar track
-DELETE {{baseUrl}}/tracks/507f1f77bcf86cd799439011 HTTP/1.1
-
-### ==========================================
-### STORAGE
-### ==========================================
-
-### Listar archivos
-GET {{baseUrl}}/storage HTTP/1.1
-
-### Obtener archivo por ID
-GET {{baseUrl}}/storage/507f1f77bcf86cd799439011 HTTP/1.1
-
-### Eliminar archivo
-DELETE {{baseUrl}}/storage/507f1f77bcf86cd799439011 HTTP/1.1
-
-### ==========================================
+### Subir o reemplazar carátula
+POST {{baseUrl}}/movies/69a17f7274adead1efad26da/upload-cover HTTP/1.1
+Content-Type: multipart/form-data
+Content-Disposition: form-data; name="cover"; filename="matrix.png"
+Content-Type: image/png
 ### Para subir archivos usa curl:
+
 curl -X POST http://localhost:3000/api/storage -F "file=@C:/Users/liyin/Downloads/yipee.png"
-### ==========================================
+### Top 5 películas más alquiladas
+GET {{baseUrl}}/movies/top HTTP/1.1
+@baseUrl = http://localhost:3000/api
+@contentType = application/json
+
+### Crear película 1
+POST {{baseUrl}}/movies HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "title": "The Matrix",
+  "director": "Lana Wachowski",
+  "year": 1999,
+  "genre": "scifi",
+  "copies": 5
+}
+
+### Crear película 2
+POST {{baseUrl}}/movies HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "title": "Inception",
+  "director": "Christopher Nolan",
+  "year": 2010,
+  "genre": "action",
+  "copies": 5
+}
+
+### Crear película 3
+POST {{baseUrl}}/movies HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "title": "The Godfather",
+  "director": "Francis Ford Coppola",
+  "year": 1972,
+  "genre": "drama",
+  "copies": 5
+}
+
+### Crear película 4
+POST {{baseUrl}}/movies HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "title": "Superbad",
+  "director": "Greg Mottola",
+  "year": 2007,
+  "genre": "comedy",
+  "copies": 5
+}
+
+### Crear película 5
+POST {{baseUrl}}/movies HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "title": "It",
+  "director": "Andy Muschietti",
+  "year": 2017,
+  "genre": "horror",
+  "copies": 5
+}
