@@ -9,7 +9,7 @@ const __dirname = import.meta.dirname;
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = join(__dirname, '../../storage');
-    cb(null, 'C:/Users/liyin/Web2/Tema5/storage');
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
