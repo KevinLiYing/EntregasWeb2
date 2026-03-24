@@ -33,24 +33,26 @@ export const createPodcast = async (req, res) => {
 };
 
 // PUT	/api/podcasts/:id
-export const updatePodcast = async (req, res) => {
-    const podcast = await Podcast.findById(req.params.id);
+export const updatePodcast = async (req, res) => {  
+    const podcast = await Podcast.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true, runValidators: true }
+    );
     if (!podcast) {
         return handleHttpError(res, 'Podcast no encontrado', 404);
     }
-    res.status(200).json({ data: podcast });
+    res.json({ data: podcast });
 };
 
 // DELETE	/api/podcasts/:id
 export const deletePodcast = async (req, res) => {
-    const podcast = await Podcast.findById(req.params.id);
-
+    const podcast = await Podcast.findByIdAndDelete(req.params.id);
     if (!podcast) {
         return handleHttpError(res, 'Podcast no encontrado', 404);
     }
-
     res.status(204).send();
-}
+};
 
 // GET	/api/podcasts/admin/all
 export const getAllPodcasts = async (req, res) => {
@@ -67,16 +69,3 @@ export const publishPodcast = async (req, res) => {
     await podcast.save();
     res.json({ data: podcast });
 }
-/*
-  const movie = await Movie.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true, runValidators: true }
-  );
-  
-  if (!movie) {
-    return handleHttpError(res, 'Película no encontrado', 404);
-  }
-  
-  res.json({ data: movie });
-*/
