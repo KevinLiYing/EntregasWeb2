@@ -1,9 +1,14 @@
 
+
 import express from 'express';
 import cors from 'cors';
 import dbConnect from './config/db.js';
 import routes from './routes/index.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerOptions from './docs/swagger.js';
+
 
 const app = express();
 
@@ -15,12 +20,17 @@ app.use(express.urlencoded({ extended: true }));
 // Archivos estáticos
 app.use('/uploads', express.static('storage'));
 
+
+// Swagger docs
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Health check
 app.get('/health', (req, res) => {
-	res.json({ 
-		status: 'ok', 
-		timestamp: new Date().toISOString() 
-	});
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString() 
+  });
 });
 
 // Rutas de la API
