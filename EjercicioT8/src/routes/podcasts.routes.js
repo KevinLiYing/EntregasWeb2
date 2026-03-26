@@ -12,9 +12,9 @@ router.get('/', controller.getPodcasts);
 //GET    /api/podcasts/:id
 router.get('/:id', validateObjectId(), controller.getPodcast);
 //POST   /api/podcasts
-router.post('/', session, /*validate(createPodcastSchema),*/ controller.createPodcast);
+router.post('/', session, validate(createPodcastSchema), controller.createPodcast);
 //PUT    /api/podcasts/:id
-router.put('/:id', session, validateObjectId(), /*validate(updatePodcastSchema),*/ controller.updatePodcast);
+router.put('/:id', session, validateObjectId(), validate(updatePodcastSchema), controller.updatePodcast);
 //DELETE /api/podcasts/:id
 router.delete('/:id', session, requireRole('admin'), validateObjectId(), controller.deletePodcast);
 //GET    /api/podcasts/admin/all
