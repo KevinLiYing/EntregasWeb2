@@ -2,15 +2,6 @@ import Podcast from "../models/podcast.model";
 import { handleHttpError } from "../utils/handleError";
 
 const PUBLIC_URL = process.env.PUBLIC_URL
-/*
-	Público	Listar podcasts publicados
-	Público	Obtener un podcast
-POST	/api/podcasts	Autenticado	Crear podcast
-PUT	/api/podcasts/:id	Autenticado (autor)	Actualizar propio podcast
-DELETE	/api/podcasts/:id	Admin	Eliminar cualquier podcast
-GET	/api/podcasts/admin/all	Admin	Listar todos (incluye no publicados)
-PATCH	/api/podcasts/:id/publish	Admin	Publicar/despublicar
-*/
 
 // GET	/api/podcasts
 export const getPodcasts = async (req, res) => {

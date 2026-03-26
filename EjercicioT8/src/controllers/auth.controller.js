@@ -4,12 +4,6 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { handleHttpError } from '../utils/handleError.js';
 
-/*
-POST   /api/auth/register   Público      Registro de usuario
-POST   /api/auth/login      Público      Login, devuelve token
-GET    /api/auth/me         Autenticado  Perfil del usuario actual
-*/
-
 // POST /api/auth/register
 export const register = async (req, res) => {
 	try {
