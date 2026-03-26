@@ -50,7 +50,7 @@ export const createMovie = async (req, res) => {
   res.status(201).json({ data: movie });
 };
 
-// PATCH /api/movies/:id
+// PATCH /api/movies/:id  
 export const updateMovie = async (req, res) => {
   const movie = await Movie.findByIdAndUpdate(
     req.params.id,
