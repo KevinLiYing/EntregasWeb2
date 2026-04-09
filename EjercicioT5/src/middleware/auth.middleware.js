@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
+import { verifyToken } from '../utils/jwt.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+
 
 // Middleware para requerir autenticación
 export function authRequired(req, res, next) {
@@ -10,7 +10,7 @@ export function authRequired(req, res, next) {
   }
   const token = auth.split(' ')[1];
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = verifyToken(token);
     req.user = payload;
     next();
   } catch (err) {

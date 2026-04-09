@@ -1,8 +1,8 @@
 import prisma from '../config/prisma.js';
-import jwt from 'jsonwebtoken';
+import { signToken } from '../utils/jwt.js';
 import bcrypt from 'bcryptjs';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+
 
 // POST /api/auth/register
 export const register = async (req, res, next) => {
@@ -19,7 +19,7 @@ export const register = async (req, res, next) => {
 		const user = await prisma.user.create({
 			data: { email, name, password: hash }
 		});
-		const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+		const token = signToken({ id: user.id, role: user.role });
 		res.status(201).json({
 			user: { id: user.id, email: user.email, name: user.name, role: user.role },
 			token
@@ -44,7 +44,7 @@ export const login = async (req, res, next) => {
 		if (!valid) {
 			return res.status(401).json({ error: true, message: 'Credenciales inválidas' });
 		}
-		const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+		const token = signToken({ id: user.id, role: user.role });
 		res.json({
 			user: { id: user.id, email: user.email, name: user.name, role: user.role },
 			token
