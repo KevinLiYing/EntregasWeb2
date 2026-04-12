@@ -1,74 +1,65 @@
 import mongoose from 'mongoose';
-/*{
-  email: String,             // Único (index: unique), validado con Zod
-  password: String,          // Cifrada con bcrypt
-  name: String,              // Nombre
-  lastName: String,          // Apellidos
-  nif: String,               // Documento de identidad
-  role: 'admin' | 'guest',            // Por defecto: 'admin'
-  status: 'pending' | 'verified',     // Estado de verificación del email (index)
-  verificationCode: String,  // Código aleatorio de 6 dígitos
-  verificationAttempts: Number, // Intentos restantes (máximo 3)
-  company: ObjectId,         // ref: 'Company' — se asigna en el onboarding (index)
-  address: {
-    street: String,
-    number: String,
-    postal: String,
-    city: String,
-    province: String
-  },
-  deleted: Boolean,          // Soft delete
-  createdAt: Date,
-  updatedAt: Date
-}*/
-// Virtual (no se almacena, se calcula):
-// fullName → name + ' ' + lastName
+
 const userSchema = new mongoose.Schema(
   {
-    title: {
+    email: {
       type: String,
-      required: [true, 'El nombre es requerido'],
-      minlength: [2, 'Mínimo 2 caracteres'],
+      required: [true, 'El email es requerido'],
+      unique: true,
+      trim: true,
+      lowercase: true,
+      index: true
     },
-    director: {
+    password: {
       type: String,
-      require: [true, "El director es requerido"]
+      required: [true, 'La contraseña es requerida']
     },
-    year: {
-      type: Number,
-      min: [1888, "Año introducido no válido"]
-    },
-    genre: {
+    name: {
       type: String,
-      enum: ["action", "comedy" , "drama", "horror", "scifi"],
-    required: [true, "Introduce un género"]
+      required: [true, 'El nombre es requerido']
     },
-    copies: {
-      type: Number,
-      default: 5,
-      min: [0, "No puede ser negativo"]
-    },
-    availableCopies: {
-      type: Number,
-      default: 5,
-      min: [0, "No puede ser negativo"]
-    },
-    timesRented: {
-      type: Number,
-      default: 0,
-      min: 0
-    },
-    cover: {
+    lastName: {
       type: String,
-      default: null
+      required: [true, 'Los apellidos son requeridos']
     },
-    rating: {
+    nif: {
+      type: String,
+      required: [true, 'El NIF es requerido']
+    },
+    role: {
+      type: String,
+      enum: ['admin', 'guest'],
+      default: 'admin'
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'verified'],
+      default: 'pending',
+      index: true
+    },
+    verificationCode: {
+      type: String
+    },
+    verificationAttempts: {
       type: Number,
-      min: [0, 'El rating mínimo es 0'],
-      max: [5, 'El rating máximo es 5'],
-      default: 0
-}
-
+      default: 3
+    },
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      index: true
+    },
+    address: {
+      street: { type: String },
+      number: { type: String },
+      postal: { type: String },
+      city: { type: String },
+      province: { type: String }
+    },
+    deleted: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,   // Añade createdAt y updatedAt
@@ -76,8 +67,15 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Probando a usar indices
-userSchema.index({ title: 'text' });
+// Virtual for full name
+userSchema.virtual('fullName').get(function () {
+  return `${this.name} ${this.lastName}`;
+});
+
+// Indexes
+userSchema.index({ email: 1 }, { unique: true });
+userSchema.index({ company: 1 });
+userSchema.index({ status: 1 });
 
 const User = mongoose.model('User', userSchema);
 
