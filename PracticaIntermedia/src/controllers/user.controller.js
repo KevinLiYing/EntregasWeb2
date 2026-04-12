@@ -42,7 +42,6 @@ export const registerUser = async (req, res, next) => {
 		notificationService.emit('user:registered', user);
 		const accessToken = signAccessToken(user);
 		const refreshToken = signRefreshToken(user);
-		// TODO: Save refreshToken in DB if you want to invalidate later
 		res.status(201).json({
 			user: { email: user.email, status: user.status, role: user.role },
 			accessToken,
@@ -88,7 +87,6 @@ export const loginUser = async (req, res, next) => {
 		if (!valid) return next(AppError.unauthorized('Credenciales incorrectas'));
 		const accessToken = signAccessToken(user);
 		const refreshToken = signRefreshToken(user);
-		// TODO: Save refreshToken in DB if you want to invalidate later
 		res.json({
 			user: { email: user.email, status: user.status, role: user.role },
 			accessToken,
@@ -191,7 +189,6 @@ export const refreshToken = async (req, res, next) => {
 		}
 		const user = await User.findById(payload.id);
 		if (!user) return next(AppError.unauthorized('Usuario no encontrado'));
-		// TODO: Check if refreshToken is valid if you store them
 		const newAccessToken = signAccessToken(user);
 		res.json({ accessToken: newAccessToken });
 	} catch (err) {
