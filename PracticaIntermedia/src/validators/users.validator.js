@@ -1,10 +1,13 @@
 import { z } from 'zod';
 
-// Registro de usuario
+// Registro de usuario (todos los campos requeridos)
 export const registerUserSchema = z.object({
   body: z.object({
     email: z.string().email().transform((v) => v.trim().toLowerCase()),
     password: z.string().min(8),
+    name: z.string().min(1).transform((v) => v.trim()),
+    lastName: z.string().min(1).transform((v) => v.trim()),
+    nif: z.string().min(1).transform((v) => v.trim())
   })
 });
 

@@ -1,4 +1,3 @@
-
 import User from '../models/User.js';
 import Company from '../models/Company.js';
 import { AppError } from '../utils/AppError.js';
@@ -26,7 +25,7 @@ const randomCode = () => Math.floor(100000 + Math.random() * 900000).toString();
 // 1) Registro de usuario
 export const registerUser = async (req, res, next) => {
 	try {
-		const { email, password } = req.body;
+		const { email, password, name, lastName, nif } = req.body;
 		const exists = await User.findOne({ email });
 		if (exists) return next(AppError.conflict('Email ya registrado'));
 		const hash = await bcrypt.hash(password, 10);
@@ -34,6 +33,9 @@ export const registerUser = async (req, res, next) => {
 		const user = await User.create({
 			email,
 			password: hash,
+			name,
+			lastName,
+			nif,
 			role: 'admin',
 			status: 'pending',
 			verificationCode: code,

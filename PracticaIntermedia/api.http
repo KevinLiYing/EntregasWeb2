@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3000/api/user
 @contentType = application/json
-@token = TU_TOKEN_AQUI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGQzNjExM2VmMjE5ZjU0N2M3YzVmNiIsImVtYWlsIjoia2V2aW5AZWplbXBsby5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzYxMDYwMTcsImV4cCI6MTc3NjEwNjkxN30.deXn3iBAgrcA86LWF81WMZBY3vdmUXDrBmd1E0kw7aA
 
 ### ==========================================
 ### HEALTH CHECK
@@ -17,8 +17,11 @@ POST {{baseUrl}}/register
 Content-Type: {{contentType}}
 
 {
-  "email": "juan@ejemplo.com",
-  "password": "MiPassword123"
+  "email": "kevin@ejemplo.com",
+  "password": "constraseniasupersegura123",
+  "name": "kevin",
+  "lastName": "li",
+  "nif": "12345678A"
 }
 
 ### Login
@@ -26,8 +29,8 @@ POST {{baseUrl}}/login
 Content-Type: {{contentType}}
 
 {
-  "email": "juan@ejemplo.com",
-  "password": "MiPassword123"
+  "email": "kevin@ejemplo.com",
+  "password": "constraseniasupersegura123"
 }
 
 ### ==========================================
@@ -39,7 +42,7 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "code": "123456"
+  "code": "752552"
 }
 
 ### ==========================================
@@ -51,8 +54,8 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "name": "Juan",
-  "lastName": "Pérez",
+  "name": "kevin",
+  "lastName": "li",
   "nif": "12345678A"
 }
 
@@ -78,6 +81,22 @@ Authorization: Bearer {{token}}
 }
 
 ### ==========================================
+### SUBIR LOGO DE LA COMPAÑÍA
+### ==========================================
+
+PATCH {{baseUrl}}/logo
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101001
+
+-----011000010111000001101001
+Content-Disposition: form-data; name="logo"; filename="logo.png"
+Content-Type: image/png
+
+< ./logo.png
+-----011000010111000001101001--
+}
+
+### ==========================================
 ### OBTENER USUARIO AUTENTICADO
 ### ==========================================
 
@@ -93,8 +112,8 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "currentPassword": "MiPassword123",
-  "newPassword": "NuevaPassword456"
+  "currentPassword": "constraseniasupersegura123",
+  "newPassword": "nuevaultracontrseniasegura0123"
 }
 
 ### ==========================================
@@ -117,4 +136,15 @@ Authorization: Bearer {{token}}
   "name": "Nuevo",
   "lastName": "Compañero",
   "nif": "87654321B"
+}
+
+### ==========================================
+### REFRESH TOKEN
+### ==========================================
+
+POST {{baseUrl}}/refresh
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 }

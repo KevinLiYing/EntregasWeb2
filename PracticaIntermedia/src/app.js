@@ -7,7 +7,6 @@ import dbConnect from './config/db.js';
 import routes from './routes/index.js';
 // Import error handling middleware
 import { errorHandler, notFoundHandler } from './middleware/error-handler.js';
-
 // Create Express app
 const app = express();
 
@@ -56,10 +55,13 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
+console.log('DB_URI from .env:', process.env.DB_URI);
+
 const startServer = async () => {
   try {
     // Connect to MongoDB
     await dbConnect();
+    
     // Start Express server
     app.listen(PORT, () => {
       console.log(`🚀 Servidor en http://localhost:${PORT}`);

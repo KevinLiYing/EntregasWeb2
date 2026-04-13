@@ -3,6 +3,7 @@ import userRoutes from './user.routes.js';
 
 const router = express.Router();
 
-router.use('/users', userRoutes);
+// Monta las rutas de usuario bajo /user para que /api/user/register funcione
+router.use('/user', userRoutes);
 
 export default router;
