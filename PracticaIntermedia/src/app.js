@@ -6,7 +6,7 @@ import dbConnect from './config/db.js';
 // Import main API routes
 import routes from './routes/index.js';
 // Import error handling middleware
-import { errorHandler, notFound } from './middleware/error.middleware.js';
+import { errorHandler, notFoundHandler } from './middleware/error-handler.js';
 
 // Create Express app
 const app = express();
@@ -46,7 +46,7 @@ app.use('/api', routes);
 // =============================
 
 // Handle 404 Not Found
-app.use(notFound);
+app.use(notFoundHandler);
 // Centralized error handler
 app.use(errorHandler);
 

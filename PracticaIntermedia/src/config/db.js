@@ -3,12 +3,10 @@ import mongoose from 'mongoose';
 
 const dbConnect = async () => {
   const DB_URI = process.env.DB_URI;
-  
   if (!DB_URI) {
     console.error('❌ DB_URI no está definida en .env');
     process.exit(1);
   }
-  
   try {
     await mongoose.connect(DB_URI);
     console.log('✅ Conectado a MongoDB');
