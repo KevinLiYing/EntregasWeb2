@@ -1,0 +1,120 @@
+@baseUrl = http://localhost:3000/api/user
+@contentType = application/json
+@token = TU_TOKEN_AQUI
+
+### ==========================================
+### HEALTH CHECK
+### ==========================================
+
+GET http://localhost:3000/health
+
+### ==========================================
+### AUTH - Registro y Login
+### ==========================================
+
+### Registrar usuario (rol: admin por defecto)
+POST {{baseUrl}}/register
+Content-Type: {{contentType}}
+
+{
+  "email": "juan@ejemplo.com",
+  "password": "MiPassword123"
+}
+
+### Login
+POST {{baseUrl}}/login
+Content-Type: {{contentType}}
+
+{
+  "email": "juan@ejemplo.com",
+  "password": "MiPassword123"
+}
+
+### ==========================================
+### VALIDAR EMAIL
+### ==========================================
+
+PUT {{baseUrl}}/validation
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "code": "123456"
+}
+
+### ==========================================
+### ONBOARDING DATOS PERSONALES
+### ==========================================
+
+PUT {{baseUrl}}/register
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "name": "Juan",
+  "lastName": "Pérez",
+  "nif": "12345678A"
+}
+
+### ==========================================
+### ONBOARDING DATOS COMPAÑÍA
+### ==========================================
+
+PATCH {{baseUrl}}/company
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "name": "Mi Empresa",
+  "cif": "B12345678",
+  "address": {
+    "street": "Calle Falsa",
+    "number": "123",
+    "postal": "28080",
+    "city": "Madrid",
+    "province": "Madrid"
+  },
+  "isFreelance": false
+}
+
+### ==========================================
+### OBTENER USUARIO AUTENTICADO
+### ==========================================
+
+GET {{baseUrl}}
+Authorization: Bearer {{token}}
+
+### ==========================================
+### CAMBIAR CONTRASEÑA
+### ==========================================
+
+PUT {{baseUrl}}/password
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "currentPassword": "MiPassword123",
+  "newPassword": "NuevaPassword456"
+}
+
+### ==========================================
+### ELIMINAR USUARIO (SOFT)
+### ==========================================
+
+DELETE {{baseUrl}}?soft=true
+Authorization: Bearer {{token}}
+
+### ==========================================
+### INVITAR COMPAÑERO (SOLO ADMIN)
+### ==========================================
+
+POST {{baseUrl}}/invite
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "email": "nuevo@ejemplo.com",
+  "name": "Nuevo",
+  "lastName": "Compañero",
+  "nif": "87654321B"
+}
