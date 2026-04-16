@@ -34,11 +34,10 @@ const userSchema = new mongoose.Schema({
 	timestamps: true
 });
 
-// Hashear contraseña antes de guardar
-userSchema.pre('save', async function(next) {
-	if (!this.isModified('password')) return next();
+// Hashear contraseña antes de guardar (async/await para Mongoose 7+)
+userSchema.pre('save', async function() {
+	if (!this.isModified('password')) return;
 	this.password = await bcrypt.hash(this.password, 10);
-	next();
 });
 
 // Método para comparar contraseña

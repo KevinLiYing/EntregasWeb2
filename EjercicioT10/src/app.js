@@ -8,7 +8,7 @@ import authRoutes from './routes/auth.routes.js';
 import roomsRoutes from './routes/rooms.routes.js';
 import { chatHandler } from './sockets/handlers/chat.handlers.js';
 import { roomHandler } from './sockets/handlers/room.handlers.js';
-import { authMiddleware as socketAuthMiddleware } from './middleware/auth.middleware.js';
+import { socketAuthMiddleware } from './middleware/socketAuth.middleware.js';
 
 dotenv.config();
 dbConnect();

@@ -11,8 +11,7 @@ export async function register(req, res) {
   try {
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ message: 'Email ya registrado' });
-    const hashed = await hashPassword(password);
-    const user = await User.create({ name, email, password: hashed });
+    const user = await User.create({ name, email, password });
     const token = signToken({ id: user._id, name: user.name, email: user.email });
     res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
   } catch (error) {
@@ -29,7 +28,7 @@ export async function login(req, res) {
   try {
     const user = await User.findOne({ email }).select('+password');
     if (!user) return res.status(400).json({ message: 'Credenciales inválidas' });
-    const valid = await comparePassword(password, user.password);
+    const valid = await user.comparePassword(password);
     if (!valid) return res.status(400).json({ message: 'Credenciales inválidas' });
     const token = signToken({ id: user._id, name: user.name, email: user.email });
     res.json({ token, user: { id: user._id, name: user.name, email: user.email } });

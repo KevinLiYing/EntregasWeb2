@@ -50,14 +50,17 @@
 		// Login
 		document.getElementById('loginForm').onsubmit = async (e) => {
 			e.preventDefault();
+            // coger el mail y la contraseña del formulario 
 			const email = document.getElementById('email').value;
 			const password = document.getElementById('password').value;
+            // pasarselo a un fetch para logear al usuario
 			const res = await fetch('/api/auth/login', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email, password })
 			});
 			const data = await res.json();
+            // si el login es correcto guardamos el token en localStorage y redirigimos al chat, sino mostramos un mensaje de error
 			if (res.ok && data.token) {
 				localStorage.setItem('token', data.token);
 				window.location.href = '/chat.html';
@@ -68,9 +71,11 @@
 		// Registro
 		document.getElementById('registerForm').onsubmit = async (e) => {
 			e.preventDefault();
+            // con el formulario conseguimos los elementos
 			const name = document.getElementById('name').value;
 			const email = document.getElementById('emailReg').value;
 			const password = document.getElementById('passwordReg').value;
+            // hacemos un fetch para registar al usuario y le pasamos los campos
 			const res = await fetch('/api/auth/register', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
