@@ -148,17 +148,36 @@
 		};
 
 		// Indicador escribiendo
-		document.getElementById('messageInput').oninput = () => {
-			if (currentRoom) socket.emit('chat:typing', { roomId: currentRoom });
-		};
+		let typing = false;
+		let typingTimer;
+		const TYPING_INTERVAL = 1200;
+
+		document.getElementById('messageInput').addEventListener('input', () => {
+			if (!currentRoom) return;
+			if (!typing) {
+				typing = true;
+				socket.emit('chat:typing', { roomId: currentRoom });
+			}
+			clearTimeout(typingTimer);
+			typingTimer = setTimeout(() => {
+				typing = false;
+				socket.emit('chat:stopTyping', { roomId: currentRoom });
+			}, TYPING_INTERVAL);
+		});
+
 		socket.on('chat:typing', ({ user }) => {
 			showTyping(`${user.name} está escribiendo...`);
 		});
+		socket.on('chat:stopTyping', ({ user }) => {
+			clearTyping();
+		});
+
 		function showTyping(text) {
 			const el = document.getElementById('typing');
 			el.textContent = text;
-			clearTimeout(typingTimeout);
-			typingTimeout = setTimeout(() => { el.textContent = ''; }, 1500);
+		}
+		function clearTyping() {
+			document.getElementById('typing').textContent = '';
 		}
 
 		// Logout

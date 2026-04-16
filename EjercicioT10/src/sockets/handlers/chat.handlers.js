@@ -42,6 +42,10 @@ export function chatHandler(io, socket) {
 		socket.to(roomId).emit('chat:typing', { user: socket.user });
 	});
 
+	socket.on('chat:stopTyping', ({ roomId }) => {
+		socket.to(roomId).emit('chat:stopTyping', { user: socket.user });
+	});
+
 	// Presencia online/offline
 	socket.on('disconnecting', () => {
 		for (const roomId of socket.rooms) {
