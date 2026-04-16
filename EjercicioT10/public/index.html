@@ -61,7 +61,7 @@
 			});
 			const data = await res.json();
             // si el login es correcto guardamos el token en localStorage y redirigimos al chat, sino mostramos un mensaje de error
-			if (res.ok && data.token) {
+			if (res.ok) {
 				localStorage.setItem('token', data.token);
 				window.location.href = '/chat.html';
 			} else {

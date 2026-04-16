@@ -5,6 +5,7 @@ import { signToken } from '../utils/jwt.js';
 // Registro
 export async function register(req, res) {
   const { name, email, password } = req.body;
+  console.log('Registro - password recibido:', password);
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Todos los campos son obligatorios' });
   }
@@ -22,6 +23,7 @@ export async function register(req, res) {
 // Login
 export async function login(req, res) {
   const { email, password } = req.body;
+  console.log('Login - password recibido:', password);
   if (!email || !password) {
     return res.status(400).json({ message: 'Email y contraseña requeridos' });
   }

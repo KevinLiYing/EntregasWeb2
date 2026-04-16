@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
 		required: true,
 		minlength: 6,
 		select: false // No devolver por defecto
+		// No se aplica restricción de patrón para permitir cualquier carácter
 	},
 	online: {
 		type: Boolean,
