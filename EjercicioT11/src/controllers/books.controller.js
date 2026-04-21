@@ -1,5 +1,5 @@
 import prisma from '../config/prisma.js';
-// import { asyncHandler, errors } from '../utils/handleError.js';
+import { asyncHandler, errors } from '../utils/handleError.js';
 
 // GET /api/books - Listar libros (con filtros)
 export const getBooks = asyncHandler(async (req, res) => {

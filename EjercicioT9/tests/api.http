@@ -1,0 +1,120 @@
+@baseUrl = http://localhost:3000/api
+@contentType = application/json
+@token = <PEGA_TU_TOKEN_AQUI>
+
+### ==========================================
+### HEALTH CHECK
+### ==========================================
+GET http://localhost:3000/health
+
+### ==========================================
+### AUTH - Registro y Login
+### ==========================================
+
+### Registrar usuario
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "usuario@ejemplo.com",
+  "password": "contraseña123",
+  "name": "Usuario Prueba"
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "usuario@ejemplo.com",
+  "password": "contraseña123"
+}
+
+### Obtener perfil autenticado
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### ==========================================
+### BOOKS
+### ==========================================
+
+### Listar libros
+GET {{baseUrl}}/books
+
+### Obtener libro por ID
+GET {{baseUrl}}/books/1
+
+### Crear libro (Librarian/Admin)
+POST {{baseUrl}}/books
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "isbn": "9781234567890",
+  "title": "Libro de Prueba",
+  "author": "Autor Ejemplo",
+  "genre": "Ficción",
+  "description": "Descripción opcional",
+  "publishedYear": 2024,
+  "copies": 5
+}
+
+### Actualizar libro (Librarian/Admin)
+PUT {{baseUrl}}/books/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "title": "Libro Actualizado",
+  "copies": 10
+}
+
+### Eliminar libro (Admin)
+DELETE {{baseUrl}}/books/1
+Authorization: Bearer {{token}}
+
+### ==========================================
+### LOANS
+### ==========================================
+
+### Mis préstamos
+GET {{baseUrl}}/loans
+Authorization: Bearer {{token}}
+
+### Todos los préstamos (Librarian/Admin)
+GET {{baseUrl}}/loans/all
+Authorization: Bearer {{token}}
+
+### Solicitar préstamo
+POST {{baseUrl}}/loans
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "bookId": 1
+}
+
+### Devolver libro
+PUT {{baseUrl}}/loans/1/return
+Authorization: Bearer {{token}}
+
+### ==========================================
+### REVIEWS
+### ==========================================
+
+### Reseñas de un libro
+GET {{baseUrl}}/books/1/reviews
+
+### Crear reseña
+POST {{baseUrl}}/books/1/reviews
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "rating": 5,
+  "comment": "¡Excelente libro!"
+}
+
+### Eliminar mi reseña
+DELETE {{baseUrl}}/reviews/1
+Authorization: Bearer {{token}}

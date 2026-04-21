@@ -1,10 +1,11 @@
-// src/config/prisma.js
-import { PrismaClient } from '@prisma/client';
+import pkg from '@prisma/client';
+const { PrismaClient } = pkg;
 
+// Solo pasar la opción 'log', sin adapter ni accelerateUrl
 const prisma = new PrismaClient({
   log: process.env.NODE_ENV === 'development'
-    ? ['query', 'info', 'warn', 'error']
-    : ['error']
+    ? ['query', 'error', 'warn']
+    : ['error'],
 });
 
 export default prisma;
