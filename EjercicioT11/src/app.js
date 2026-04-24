@@ -9,6 +9,10 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerOptions from './docs/swagger.js';
 
+import logger from './utils/logger.js';
+import { requestLogger } from './middleware/logger.middleware.js';
+import mongoose from 'mongoose';
+
 
 const app = express();
 
@@ -16,6 +20,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Logging de peticiones
+app.use(requestLogger);
 
 // Archivos estáticos
 app.use('/uploads', express.static('storage'));
@@ -26,11 +33,26 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Health check
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    timestamp: new Date().toISOString() 
-  });
+
+app.get('/api/health', async (req, res) => {
+	const healthcheck = {
+		status: 'ok',
+		timestamp: new Date().toISOString(),
+		uptime: process.uptime(),
+		environment: process.env.NODE_ENV
+	};
+
+	try {
+		// Verificar conexión a BD
+		await mongoose.connection.db.admin().ping();
+		healthcheck.database = 'connected';
+	} catch (error) {
+		healthcheck.status = 'error';
+		healthcheck.database = 'disconnected';
+		return res.status(503).json(healthcheck);
+	}
+
+	res.json(healthcheck);
 });
 
 // Rutas de la API
