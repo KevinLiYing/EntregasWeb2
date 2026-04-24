@@ -1,68 +1,60 @@
-import prisma from '../config/prisma.js';
-import { signToken } from '../utils/jwt.js';
+
+import User from '../models/user.model.js';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-
-
+import { handleHttpError } from '../utils/handleError.js';
 
 // POST /api/auth/register
-export const register = async (req, res, next) => {
+export const register = async (req, res) => {
 	try {
-		const { email, name, password } = req.body;
-		if (!email || !name || !password) {
-			return res.status(400).json({ error: true, message: 'Faltan campos obligatorios' });
+		const { name, email, password } = req.body;
+		if (!name || !email || !password) {
+			return handleHttpError(res, 'Faltan campos requeridos', 400);
 		}
-		const exists = await prisma.user.findUnique({ where: { email } });
-		if (exists) {
-			return res.status(409).json({ error: true, message: 'El email ya está registrado' });
+		const existing = await User.findOne({ email });
+		if (existing) {
+			return handleHttpError(res, 'El email ya está registrado', 409);
 		}
-		const hash = await bcrypt.hash(password, 10);
-		const user = await prisma.user.create({
-			data: { email, name, password: hash }
-		});
-		const token = signToken({ id: user.id, role: user.role });
-		res.status(201).json({
-			user: { id: user.id, email: user.email, name: user.name, role: user.role },
-			token
-		});
-	} catch (error) {
-		next(error);
+		const hashedPassword = await bcrypt.hash(password, 10);
+		const user = await User.create({ name, email, password: hashedPassword });
+		res.status(201).json({ data: { id: user._id, name: user.name, email: user.email, role: user.role } });
+	} catch (err) {
+		handleHttpError(res, 'Error al registrar usuario');
 	}
 };
 
 // POST /api/auth/login
-export const login = async (req, res, next) => {
+export const login = async (req, res) => {
 	try {
 		const { email, password } = req.body;
 		if (!email || !password) {
-			return res.status(400).json({ error: true, message: 'Faltan campos obligatorios' });
+			return handleHttpError(res, 'Faltan campos requeridos', 400);
 		}
-		const user = await prisma.user.findUnique({ where: { email } });
+		const user = await User.findOne({ email });
+        // he puesto un mensaje genérico para no revelar si realmente existe el mail
 		if (!user) {
-			return res.status(401).json({ error: true, message: 'Credenciales inválidas' });
+			return handleHttpError(res, 'Credenciales inválidas', 401);
 		}
 		const valid = await bcrypt.compare(password, user.password);
 		if (!valid) {
-			return res.status(401).json({ error: true, message: 'Credenciales inválidas' });
+			return handleHttpError(res, 'Credenciales inválidas', 401);
 		}
-		const token = signToken({ id: user.id, role: user.role });
-		res.json({
-			user: { id: user.id, email: user.email, name: user.name, role: user.role },
-			token
-		});
-	} catch (error) {
-		next(error);
+		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+		res.json({ data: { token } });
+	} catch (err) {
+		handleHttpError(res, 'Error al iniciar sesión');
 	}
 };
 
 // GET /api/auth/me
-export const getProfile = async (req, res, next) => {
+export const me = async (req, res) => {
 	try {
-		const user = await prisma.user.findUnique({
-			where: { id: req.user.id },
-			select: { id: true, email: true, name: true, role: true }
-		});
-		res.json({ user });
-	} catch (error) {
-		next(error);
+		const user = req.user;
+		if (!user) {
+			return handleHttpError(res, 'No autenticado', 401);
+		}
+		res.json({ data: { id: user._id, name: user.name, email: user.email, role: user.role } });
+	} catch (err) {
+		handleHttpError(res, 'Error al obtener perfil');
 	}
 };
