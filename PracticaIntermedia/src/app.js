@@ -38,10 +38,13 @@ app.use(express.urlencoded({ extended: true }));
 // Health Check Route
 // =============================
 
-// Simple endpoint to verify server is running
+// Endpoint de health mejorado
+import mongoose from 'mongoose';
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
+    db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    uptime: process.uptime(),
     timestamp: new Date().toISOString()
   });
 });
@@ -70,17 +73,44 @@ const PORT = process.env.PORT || 3000;
 
 console.log('DB_URI from .env:', process.env.DB_URI);
 
+let shuttingDown = false;
 const startServer = async () => {
   try {
     // Connect to MongoDB
     await dbConnect();
 
     // Start Express+Socket.IO server
-    server.listen(PORT, () => {
+    const httpServer = server.listen(PORT, () => {
       console.log(`🚀 Servidor en http://localhost:${PORT}`);
       console.log(`📚 API en http://localhost:${PORT}/api`);
       console.log(`🔌 WebSocket en http://localhost:${PORT}`);
     });
+
+    // Graceful shutdown
+    const shutdown = async () => {
+      if (shuttingDown) return;
+      shuttingDown = true;
+      console.log('⏳ Cerrando servidor...');
+      httpServer.close(() => {
+        console.log('🛑 Servidor HTTP cerrado');
+      });
+      try {
+        await mongoose.connection.close();
+        console.log('🛑 Conexión MongoDB cerrada');
+      } catch (e) {
+        console.error('Error cerrando MongoDB:', e);
+      }
+      if (io) {
+        io.close(() => {
+          console.log('🛑 Socket.IO cerrado');
+          process.exit(0);
+        });
+      } else {
+        process.exit(0);
+      }
+    };
+    process.on('SIGTERM', shutdown);
+    process.on('SIGINT', shutdown);
   } catch (error) {
     console.error('❌ Error al iniciar:', error);
     process.exit(1);
