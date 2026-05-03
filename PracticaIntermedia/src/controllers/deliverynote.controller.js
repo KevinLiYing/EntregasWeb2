@@ -27,19 +27,23 @@ export async function getDeliveryNoteById(req, res, next) {
   }
 }
 
+
 export async function downloadPDF(req, res, next) {
   try {
-    // Implementación pendiente: generación y descarga de PDF
-    res.status(501).json({ message: 'No implementado' });
+    await deliveryNoteService.downloadPDF(req.params.id, req.user, res);
   } catch (err) {
     next(err);
   }
 }
 
+
 export async function signDeliveryNote(req, res, next) {
   try {
-    // Implementación pendiente: firma y subida de PDF/firma
-    res.status(501).json({ message: 'No implementado' });
+    // Aquí se asume que la URL de la firma se recibe en req.body.signatureUrl
+    const signatureUrl = req.body.signatureUrl;
+    if (!signatureUrl) return res.status(400).json({ message: 'Falta la URL de la firma' });
+    const deliveryNote = await deliveryNoteService.signDeliveryNote(req.params.id, req.user, signatureUrl);
+    res.json(deliveryNote);
   } catch (err) {
     next(err);
   }
