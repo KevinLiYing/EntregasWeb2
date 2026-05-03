@@ -201,7 +201,10 @@ export const refreshToken = async (req, res, next) => {
 // 7) Logout
 export const logout = async (req, res, next) => {
 	try {
-		// TODO: Invalidate refresh token if you store them
+		// IMPORTANTE: Aquí deberías invalidar el refresh token del usuario.
+		// Si almacenas los refresh tokens en base de datos, elimínalo aquí.
+		// Si usas una blacklist, añade el token a la lista negra.
+		// Actualmente solo se responde con un mensaje.
 		res.json({ message: 'Sesión cerrada' });
 	} catch (err) {
 		next(AppError.internal(err.message));

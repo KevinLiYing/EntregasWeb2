@@ -1,6 +1,8 @@
 // Import core dependencies
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
 // Import database connection
 import dbConnect from './config/db.js';
 // Import main API routes
@@ -16,6 +18,10 @@ const app = express();
 
 // Enable CORS for all origins
 app.use(cors());
+// Seguridad HTTP headers
+app.use(helmet());
+// Sanitización contra NoSQL injection
+app.use(mongoSanitize());
 // Parse JSON bodies
 app.use(express.json());
 // Parse URL-encoded bodies
