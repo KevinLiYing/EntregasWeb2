@@ -5,6 +5,7 @@ import AppError from '../utils/AppError.js';
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
+import { notifyDeliveryNoteNew, notifyDeliveryNoteSigned } from './socket.service.js';
 
 // Puedes reemplazar esto por integración real con Cloudinary, S3, etc.
 async function uploadToCloud(localPath) {
@@ -16,6 +17,7 @@ export async function createDeliveryNote(data, user) {
   const project = await Project.findOne({ _id: data.project, company: user.company });
   if (!project) throw new AppError('Proyecto no encontrado', 404);
   const deliveryNote = await DeliveryNote.create({ ...data, user: user._id, company: user.company });
+  notifyDeliveryNoteNew(user.company, deliveryNote);
   return deliveryNote;
 }
 
@@ -65,6 +67,7 @@ export async function signDeliveryNote(id, user, signatureUrl) {
   const pdfPath = await generateAndUploadPDF(deliveryNote);
   deliveryNote.pdfUrl = pdfPath;
   await deliveryNote.save();
+  notifyDeliveryNoteSigned(user.company, deliveryNote);
   return deliveryNote;
 }
 

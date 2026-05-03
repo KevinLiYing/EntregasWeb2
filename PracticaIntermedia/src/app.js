@@ -10,7 +10,14 @@ import routes from './routes/index.js';
 // Import error handling middleware
 import { errorHandler, notFoundHandler } from './middleware/error-handler.js';
 // Create Express app
+import http from 'http';
+import { setupSocket } from './sockets/index.js';
+import { setSocketInstance } from './services/socket.service.js';
+
 const app = express();
+const server = http.createServer(app);
+const io = setupSocket(server);
+setSocketInstance(io);
 
 // =============================
 // Global Middleware
@@ -67,11 +74,12 @@ const startServer = async () => {
   try {
     // Connect to MongoDB
     await dbConnect();
-    
-    // Start Express server
-    app.listen(PORT, () => {
+
+    // Start Express+Socket.IO server
+    server.listen(PORT, () => {
       console.log(`🚀 Servidor en http://localhost:${PORT}`);
       console.log(`📚 API en http://localhost:${PORT}/api`);
+      console.log(`🔌 WebSocket en http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error('❌ Error al iniciar:', error);

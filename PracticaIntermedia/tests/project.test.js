@@ -1,0 +1,74 @@
+// tests/project.test.js
+import request from 'supertest';
+import app from '../src/app.js';
+
+describe('Project Endpoints', () => {
+  let token, clientId;
+  beforeAll(async () => {
+    await request(app)
+      .post('/api/user/register')
+      .send({
+        email: 'project@email.com',
+        password: 'Test1234',
+        name: 'Project',
+        lastName: 'User',
+        nif: '22222222P'
+      });
+    const res = await request(app)
+      .post('/api/user/login')
+      .send({ email: 'project@email.com', password: 'Test1234' });
+    token = res.body.accessToken;
+    // Crear un cliente para asociar al proyecto
+    const clientRes = await request(app)
+      .post('/api/client')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Cliente Proy',
+        cif: 'B00000002',
+        email: 'clienteproy@test.com',
+        address: {
+          street: 'Calle',
+          number: '2',
+          postal: '00001',
+          city: 'Ciudad',
+          province: 'Provincia'
+        }
+      });
+    clientId = clientRes.body._id;
+  });
+
+  it('debería crear un proyecto', async () => {
+    const res = await request(app)
+      .post('/api/project')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Proyecto Test',
+        code: 'PRJ-001',
+        address: {
+          street: 'Calle',
+          number: '3',
+          postal: '00002',
+          city: 'Ciudad',
+          province: 'Provincia'
+        },
+        client: clientId
+      });
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toHaveProperty('name', 'Proyecto Test');
+  });
+
+  it('debería rechazar crear proyecto sin token', async () => {
+    const res = await request(app)
+      .post('/api/project')
+      .send({ name: 'Sin Token', code: 'PRJ-002', address: {}, client: clientId });
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('debería rechazar crear proyecto con datos inválidos', async () => {
+    const res = await request(app)
+      .post('/api/project')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: '', code: '', address: {}, client: '' });
+    expect(res.statusCode).toBe(400);
+  });
+});
