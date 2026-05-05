@@ -1,8 +1,29 @@
+// Descargar PDF de un albarán (unificado y limpio)
+export async function downloadPDF(id, user, res) {
+  const deliveryNote = await DeliveryNote.findOne({ _id: id, company: user.company })
+    .populate('user client project');
+  if (!deliveryNote) throw new AppError('Albarán no encontrado', 404);
+
+  if (deliveryNote.signed && deliveryNote.pdfUrl) {
+    return res.redirect(deliveryNote.pdfUrl);
+  }
+
+  // Si no hay PDF en la nube, genera uno temporal
+  const tempPath = path.join(process.platform === 'win32' ? process.env.TEMP || 'C:/tmp' : '/tmp', `deliverynote-${deliveryNote._id}.pdf`);
+  await generateDeliveryNotePDF(deliveryNote, deliveryNote.signatureUrl, tempPath);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="deliverynote-${deliveryNote._id}.pdf"`);
+  const stream = fs.createReadStream(tempPath);
+  stream.pipe(res);
+  stream.on('close', () => {
+    fs.unlink(tempPath, () => {});
+  });
+}
 // src/services/deliverynote.service.js
 import DeliveryNote from '../models/DeliveryNote.js';
 import Project from '../models/Project.js';
 import AppError from '../utils/AppError.js';
-import PDFDocument from 'pdfkit';
+import { generateDeliveryNotePDF } from './pdf.service.js';
 import fs from 'fs';
 import path from 'path';
 import { notifyDeliveryNoteNew, notifyDeliveryNoteSigned } from './socket.service.js';
@@ -105,10 +126,3 @@ async function generateAndUploadPDF(deliveryNote) {
   return url;
 }
 
-export async function downloadPDF(id, user, res) {
-  const deliveryNote = await DeliveryNote.findOne({ _id: id, company: user.company });
-  if (!deliveryNote) throw new AppError('Albarán no encontrado', 404);
-  if (!deliveryNote.pdfUrl) throw new AppError('PDF no disponible', 404);
-  // Simulación: redirige a la URL del PDF
-  res.redirect(deliveryNote.pdfUrl);
-}
