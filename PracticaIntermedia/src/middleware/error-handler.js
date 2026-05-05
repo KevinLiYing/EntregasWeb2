@@ -2,7 +2,9 @@
  * Middleware de manejo de errores
  */
 
+
 import { ZodError } from 'zod';
+import { sendSlackError } from '../services/slack.service.js';
 
 export class ApiError extends Error {
   constructor(statusCode, message, details = null) {
@@ -35,27 +37,30 @@ export const notFoundHandler = (req, res, next) => {
 
 export const errorHandler = (err, req, res, next) => {
   console.error(`❌ Error: ${err.message}`);
-  
+
   if (err.isOperational) {
     return res.status(err.statusCode).json({
       error: err.message,
       ...(err.details && { detalles: err.details })
     });
   }
-  
+
   if (err instanceof ZodError) {
     return res.status(400).json({
       error: 'Error de validación',
       detalles: err.errors
     });
   }
-  
+
   if (err instanceof SyntaxError && err.status === 400) {
     return res.status(400).json({ error: 'JSON inválido' });
   }
-  
+
+  // Notificar errores 5XX a Slack
+  sendSlackError(err, req);
+
   const isDev = process.env.NODE_ENV === 'development';
-  
+
   res.status(500).json({
     error: 'Error interno del servidor',
     ...(isDev && { mensaje: err.message, stack: err.stack })

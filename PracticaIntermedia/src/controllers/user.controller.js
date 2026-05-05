@@ -4,6 +4,7 @@ import { AppError } from '../utils/AppError.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import notificationService from '../services/notification.service.js';
+import { sendVerificationEmail } from '../services/mail.service.js';
 
 // Helpers
 const signAccessToken = (user) => {
@@ -41,6 +42,8 @@ export const registerUser = async (req, res, next) => {
 			verificationCode: code,
 			verificationAttempts: 3
 		});
+		// Enviar email de verificación
+		await sendVerificationEmail(user.email, code);
 		notificationService.emit('user:registered', user);
 		const accessToken = signAccessToken(user);
 		const refreshToken = signRefreshToken(user);
