@@ -1,7 +1,7 @@
 // src/services/project.service.js
 import Project from '../models/Project.js';
 import Client from '../models/Client.js';
-import AppError from '../utils/AppError.js';
+import { AppError } from '../utils/AppError.js';
 import { notifyProjectNew } from './socket.service.js';
 
 export async function createProject(data, user) {
@@ -19,7 +19,7 @@ export async function updateProject(id, data, user) {
   const project = await Project.findOneAndUpdate(
     { _id: id, company: user.company },
     data,
-    { new: true }
+    { returnDocument: 'after' }
   );
   if (!project) throw new AppError('Proyecto no encontrado', 404);
   return project;

@@ -94,7 +94,7 @@ router.post('/', auth, validate(createProjectSchema), projectController.createPr
  *         name: sort
  *         schema:
  *           type: string
- *         description: Ordenación (ej: createdAt)
+ *         description: "Ordenación (ejemplo: createdAt)"
  *     responses:
  *       200:
  *         description: Lista de proyectos

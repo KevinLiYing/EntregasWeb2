@@ -1,6 +1,6 @@
 // src/middleware/deliverynote.middleware.js
 import DeliveryNote from '../models/DeliveryNote.js';
-import AppError from '../utils/AppError.js';
+import { AppError } from '../utils/AppError.js';
 
 export async function checkDeliveryNoteExists(req, res, next) {
   const { id } = req.params;

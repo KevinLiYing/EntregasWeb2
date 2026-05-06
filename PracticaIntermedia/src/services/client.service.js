@@ -1,6 +1,6 @@
 // src/services/client.service.js
 import Client from '../models/Client.js';
-import AppError from '../utils/AppError.js';
+import { AppError } from '../utils/AppError.js';
 import { notifyClientNew } from './socket.service.js';
 
 export async function createClient(data, user) {
@@ -16,7 +16,7 @@ export async function updateClient(id, data, user) {
   const client = await Client.findOneAndUpdate(
     { _id: id, company: user.company },
     data,
-    { new: true }
+    { returnDocument: 'after' }
   );
   if (!client) throw new AppError('Cliente no encontrado', 404);
   return client;

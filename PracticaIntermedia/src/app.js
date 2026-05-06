@@ -2,7 +2,6 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import mongoSanitize from 'express-mongo-sanitize';
 // Import database connection
 import dbConnect from './config/db.js';
 // Import main API routes
@@ -13,6 +12,7 @@ import { errorHandler, notFoundHandler } from './middleware/error-handler.js';
 import http from 'http';
 import { setupSocket } from './sockets/index.js';
 import { setSocketInstance } from './services/socket.service.js';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
 const server = http.createServer(app);
@@ -27,12 +27,13 @@ setSocketInstance(io);
 app.use(cors());
 // Seguridad HTTP headers
 app.use(helmet());
-// Sanitización contra NoSQL injection
-app.use(mongoSanitize());
 // Parse JSON bodies
 app.use(express.json());
 // Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
+
+// Protección contra ataques de fuerza bruta/DDoS
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 
 // =============================
 // Health Check Route

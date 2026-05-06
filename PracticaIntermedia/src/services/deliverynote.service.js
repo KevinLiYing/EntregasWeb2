@@ -22,7 +22,7 @@ export async function downloadPDF(id, user, res) {
 // src/services/deliverynote.service.js
 import DeliveryNote from '../models/DeliveryNote.js';
 import Project from '../models/Project.js';
-import AppError from '../utils/AppError.js';
+import { AppError } from '../utils/AppError.js';
 import { generateDeliveryNotePDF } from './pdf.service.js';
 import fs from 'fs';
 import path from 'path';

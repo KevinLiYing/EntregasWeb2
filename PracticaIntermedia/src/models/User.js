@@ -72,10 +72,7 @@ userSchema.virtual('fullName').get(function () {
   return `${this.name} ${this.lastName}`;
 });
 
-// Indexes
-userSchema.index({ email: 1 }, { unique: true });
-userSchema.index({ company: 1 });
-userSchema.index({ status: 1 });
+
 
 const User = mongoose.model('User', userSchema);
 

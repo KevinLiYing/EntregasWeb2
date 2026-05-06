@@ -107,7 +107,7 @@ router.post('/', auth, validate(createDeliveryNoteSchema), deliveryNoteControlle
  *         name: sort
  *         schema:
  *           type: string
- *         description: Ordenación (ej: workDate)
+ *         description: "Ordenación (ejemplo: workDate)"
  *     responses:
  *       200:
  *         description: Lista de albaranes

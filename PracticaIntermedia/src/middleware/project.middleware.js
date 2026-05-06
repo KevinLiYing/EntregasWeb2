@@ -1,6 +1,6 @@
 // src/middleware/project.middleware.js
 import Project from '../models/Project.js';
-import AppError from '../utils/AppError.js';
+import { AppError } from '../utils/AppError.js';
 
 export async function checkProjectExists(req, res, next) {
   const { id } = req.params;

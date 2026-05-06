@@ -13,15 +13,19 @@ export const validate = (schema) => async (req, res, next) => {
     });
     next();
   } catch (error) {
-    if (error instanceof ZodError) {
+    if (error instanceof ZodError && Array.isArray(error.errors)) {
       const errores = error.errors.map(err => ({
         campo: err.path.slice(1).join('.') || err.path[0],
         mensaje: err.message
       }));
-      
       return res.status(400).json({
         error: 'Error de validación',
         detalles: errores
+      });
+    } else if (error instanceof ZodError) {
+      return res.status(400).json({
+        error: 'Error de validación',
+        detalles: []
       });
     }
     next(error);

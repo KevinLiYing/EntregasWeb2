@@ -1,13 +1,9 @@
 // src/controllers/client.controller.js
 import * as clientService from '../services/client.service.js';
 
-export async function createClient(req, res, next) {
-  try {
-    const client = await clientService.createClient(req.body, req.user);
-    res.status(201).json(client);
-  } catch (err) {
-    next(err);
-  }
+export async function createClient(req, res) {
+  const client = await clientService.createClient(req.body, req.user);
+  res.status(201).json(client);
 }
 
 export async function getClients(req, res, next) {

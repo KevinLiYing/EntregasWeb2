@@ -1,6 +1,6 @@
 // src/middleware/client.middleware.js
 import Client from '../models/Client.js';
-import AppError from '../utils/AppError.js';
+import { AppError } from '../utils/AppError.js';
 
 export async function checkClientExists(req, res, next) {
   const { id } = req.params;

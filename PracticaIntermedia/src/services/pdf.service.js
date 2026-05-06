@@ -1,5 +1,5 @@
 
-import PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit/js/pdfkit.es.js';
 import fs from 'fs';
 import path from 'path';
 
