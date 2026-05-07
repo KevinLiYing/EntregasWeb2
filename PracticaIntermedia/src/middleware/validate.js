@@ -4,30 +4,36 @@
 
 import { ZodError } from 'zod';
 
-export const validate = (schema) => async (req, res, next) => {
+export const validate = (schema, source = 'body') => async (req, res, next) => {
   try {
-    await schema.parseAsync({
-      body: req.body,
-      query: req.query,
-      params: req.params
-    });
+    let data;
+
+    switch (source) {
+      case 'params':
+        data = req.params;
+        break;
+      case 'query':
+        data = req.query;
+        break;
+      default:
+        data = req.body;
+    }
+
+    await schema.parseAsync(data);
     next();
   } catch (error) {
-    if (error instanceof ZodError && Array.isArray(error.errors)) {
-      const errores = error.errors.map(err => ({
-        campo: err.path.slice(1).join('.') || err.path[0],
-        mensaje: err.message
-      }));
+    if (error instanceof ZodError) {
+      const issues = error.issues || [];
+
       return res.status(400).json({
         error: 'Error de validación',
-        detalles: errores
-      });
-    } else if (error instanceof ZodError) {
-      return res.status(400).json({
-        error: 'Error de validación',
-        detalles: []
+        detalles: issues.map(err => ({
+          campo: err.path?.join('.') || '',
+          mensaje: err.message
+        }))
       });
     }
+
     next(error);
   }
 };

@@ -11,7 +11,7 @@ const signAccessToken = (user) => {
 	return jwt.sign(
 		{ id: user._id, email: user.email, role: user.role },
 		process.env.JWT_SECRET,
-		{ expiresIn: '15m' }
+		{ expiresIn: '60m' } // solo para testeo, ponerlo más bajo si me acuerdo de cambiarlo
 	);
 };
 const signRefreshToken = (user) => {
@@ -42,8 +42,8 @@ export const registerUser = async (req, res, next) => {
 			verificationCode: code,
 			verificationAttempts: 3
 		});
-		// Enviar email de verificación
-		await sendVerificationEmail(user.email, code);
+		// Enviar email de verificación (desactivado temporalmente)
+		// await sendVerificationEmail(user.email, code);
 		notificationService.emit('user:registered', user);
 		const accessToken = signAccessToken(user);
 		const refreshToken = signRefreshToken(user);
@@ -142,10 +142,15 @@ export const onboardingCompany = async (req, res, next) => {
 			company = await Company.findOne({ cif });
 			if (!company) {
 				company = await Company.create({ owner: userId, name, cif, address, isFreelance: false });
-				await User.findByIdAndUpdate(userId, { company: company._id, role: 'admin' });
 			} else {
-				await User.findByIdAndUpdate(userId, { company: company._id, role: 'guest' });
+				// Si la compañía ya existe, actualiza el owner si es necesario
+				if (!company.owner.equals(userId)) {
+					company.owner = userId;
+					await company.save();
+				}
 			}
+			// El usuario siempre será admin y se le asigna la compañía
+			await User.findByIdAndUpdate(userId, { company: company._id, role: 'admin' });
 		}
 		res.json({ message: 'Onboarding de compañía completado', company });
 	} catch (err) {

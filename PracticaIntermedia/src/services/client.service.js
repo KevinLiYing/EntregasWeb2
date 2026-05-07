@@ -4,9 +4,12 @@ import { AppError } from '../utils/AppError.js';
 import { notifyClientNew } from './socket.service.js';
 
 export async function createClient(data, user) {
+  if (!user.company) {
+    throw new AppError('Debes completar el onboarding de compañía antes de crear clientes', 400);
+  }
   const exists = await Client.findOne({ cif: data.cif, company: user.company });
   if (exists) throw new AppError('Ya existe un cliente con ese CIF', 409);
-  const client = await Client.create({ ...data, user: user._id, company: user.company });
+  const client = await Client.create({ ...data, user: user.id, company: user.company });
   notifyClientNew(user.company, client);
   return client;
 }

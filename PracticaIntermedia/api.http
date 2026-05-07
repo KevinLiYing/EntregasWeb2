@@ -1,9 +1,9 @@
 @baseUrl = http://localhost:3000/api/user
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmJjNDU3YTZmNGEzMjQwYTk3ZmU1YyIsImVtYWlsIjoiYWRtaW4zQGVqZW1wbG8uY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc4MTA5NDAwLCJleHAiOjE3NzgxMTAzMDB9.clvytIhIKxnhBa6MkJD9KlUU-nw1C5noAmlyqND0_BA
-@clientId = PON_AQUI_EL_ID_DEL_CLIENTE
-@projectId = PON_AQUI_EL_ID_DEL_PROYECTO
-@deliveryNoteId = PON_AQUI_EL_ID_DEL_ALBARAN
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmMyYTc2YmFlMmY4OTUwZTU0MjE5NCIsImVtYWlsIjoiYWRtaW42QGVqZW1wbG8uY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc4MTMzNjM0LCJleHAiOjE3NzgxMzcyMzR9.qSBiiofNzetC9FxL-Tov1pYinQdoRxsJb0z5OLj37qU
+@clientId = 69fc273aa76805d91d99f288
+@projectId = 69fc2b36f843e8c01c71c44b
+@deliveryNoteId = 69fc2bb0f843e8c01c71c44c
 
 ### ==========================================
 ### HEALTH CHECK
@@ -19,7 +19,7 @@ POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-  "email": "admin@ejemplo.com",
+  "email": "admin6@ejemplo.com",
   "password": "supersegura123",
   "name": "Admin",
   "lastName": "Ejemplo",
@@ -31,7 +31,7 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-  "email": "admin3@ejemplo.com",
+  "email": "admin6@ejemplo.com",
   "password": "supersegura123"
 }
 
@@ -41,7 +41,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "code": "488160"
+  "code": "398742"
 }
 
 ### Onboarding datos personales
@@ -61,12 +61,12 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "Empresa S.A.",
+  "name": "Mi Empresa S.L.",
   "cif": "B12345678",
   "address": {
-    "street": "Calle Falsa",
-    "number": "123",
-    "postal": "28080",
+    "street": "Calle Ejemplo",
+    "number": "1",
+    "postal": "28001",
     "city": "Madrid",
     "province": "Madrid"
   },
@@ -132,7 +132,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "Cliente Ejemplo",
+  "name": "Cliente2 Ejemplo",
   "cif": "B12345678",
   "email": "cliente@email.com",
   "address": {
