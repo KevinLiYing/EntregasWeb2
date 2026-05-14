@@ -27,12 +27,13 @@ export async function updateProject(id, data, user) {
 
 export async function getProjects(query, user) {
   const { page = 1, limit = 10, client, name, active, sort = 'createdAt' } = query;
-  const filter = { company: user.company };
+  const filter = { company: user.company, archived: { $ne: true } };
   if (client) filter.client = client;
   if (name) filter.name = { $regex: name, $options: 'i' };
   if (active !== undefined) filter.active = active === 'true';
   const totalItems = await Project.countDocuments(filter);
   const projects = await Project.find(filter)
+    .populate('client')
     .sort(sort)
     .skip((page - 1) * limit)
     .limit(Number(limit));

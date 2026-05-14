@@ -27,7 +27,7 @@ export async function updateClient(id, data, user) {
 
 export async function getClients(query, user) {
   const { page = 1, limit = 10, name, sort = 'createdAt' } = query;
-  const filter = { company: user.company };
+  const filter = { company: user.company, archived: { $ne: true } };
   if (name) filter.name = { $regex: name, $options: 'i' };
   const totalItems = await Client.countDocuments(filter);
   const clients = await Client.find(filter)
