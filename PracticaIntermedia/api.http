@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3000/api/user
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmMyYTc2YmFlMmY4OTUwZTU0MjE5NCIsImVtYWlsIjoiYWRtaW42QGVqZW1wbG8uY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc4MTMzNjM0LCJleHAiOjE3NzgxMzcyMzR9.qSBiiofNzetC9FxL-Tov1pYinQdoRxsJb0z5OLj37qU
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMDU5MTQ2YzA0MDYxYThiNjdkYTA3NyIsImVtYWlsIjoiYWRtaW43QGVqZW1wbG8uY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc4NzQ5OTIwLCJleHAiOjE3Nzg3NTM1MjB9.nPSpTJg23PEH_N9Gv3lpR0a1ALkFp0IC6dpD9N4uefs
 @clientId = 69fc273aa76805d91d99f288
 @projectId = 69fc2b36f843e8c01c71c44b
 @deliveryNoteId = 69fc2bb0f843e8c01c71c44c
@@ -19,7 +19,7 @@ POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-  "email": "admin6@ejemplo.com",
+  "email": "admin7@ejemplo.com",
   "password": "supersegura123",
   "name": "Admin",
   "lastName": "Ejemplo",
@@ -31,7 +31,7 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-  "email": "admin6@ejemplo.com",
+  "email": "admin7@ejemplo.com",
   "password": "supersegura123"
 }
 
@@ -41,7 +41,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "code": "398742"
+  "code": "355286"
 }
 
 ### Onboarding datos personales
