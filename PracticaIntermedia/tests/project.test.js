@@ -1,9 +1,12 @@
 // tests/project.test.js
 import request from 'supertest';
 import app from '../src/app.js';
+import mongoose from 'mongoose';
 
 describe('Project Endpoints', () => {
   let token, clientId;
+  let projectIds = [];
+
   beforeAll(async () => {
     await request(app)
       .post('/api/user/register')
@@ -36,70 +39,58 @@ describe('Project Endpoints', () => {
       });
     clientId = clientRes.body._id;
   });
-    const request = require('supertest');
-    const app = require('../src/app');
-    const mongoose = require('mongoose');
-    const Project = require('../src/models/Project');
-    const Client = require('../src/models/Client');
 
-    let projectIds = [];
-
-    it('Crea 3 proyectos', async () => {
-      for (let i = 1; i <= 3; i++) {
-        const res = await request(app)
-          .post('/api/project')
-          .set('Authorization', `Bearer ${token}`)
-          .send({
-            name: `Proyecto${i}`,
-            code: `PRJ${i}`,
-            address: {
-              street: 'Calle', number: '1', postal: '00000', city: 'Ciudad', province: 'Provincia'
-            },
-            client: clientId
-          });
-        expect(res.statusCode).toBe(201);
-        projectIds.push(res.body._id);
-      }
-    });
-
-    it('Archiva 1 proyecto', async () => {
+  it('Crea 3 proyectos', async () => {
+    for (let i = 1; i <= 3; i++) {
       const res = await request(app)
-        .delete(`/api/project/${projectIds[0]}`)
-        .set('Authorization', `Bearer ${token}`);
-      expect(res.statusCode).toBe(200);
-    });
-
-    it('GET /api/project devuelve 2', async () => {
-      const res = await request(app)
-        .get('/api/project')
-        .set('Authorization', `Bearer ${token}`);
-      expect(res.body.projects.length).toBe(2);
-    });
-
-    it('GET /api/project/archived devuelve 1', async () => {
-      const res = await request(app)
-        .get('/api/project/archived')
-        .set('Authorization', `Bearer ${token}`);
-      expect(res.body.length).toBe(1);
-    });
-
-    it('Restaura el archivado', async () => {
-      const res = await request(app)
-        .patch(`/api/project/${projectIds[0]}/restore`)
-        .set('Authorization', `Bearer ${token}`);
-      expect(res.statusCode).toBe(200);
-    });
-
-    it('GET /api/project devuelve 3 de nuevo', async () => {
-      const res = await request(app)
-        .get('/api/project')
-        .set('Authorization', `Bearer ${token}`);
-      expect(res.body.projects.length).toBe(3);
-    });
+        .post('/api/project')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          name: `Proyecto${i}`,
+          code: `PRJ${i}`,
+          address: {
+            street: 'Calle', number: '1', postal: '00000', city: 'Ciudad', province: 'Provincia'
+          },
+          client: clientId
+        });
+      expect(res.statusCode).toBe(201);
+      projectIds.push(res.body._id);
+    }
   });
 
-  afterAll(async () => {
-    await mongoose.connection.close();
+  it('Archiva 1 proyecto', async () => {
+    const res = await request(app)
+      .delete(`/api/project/${projectIds[0]}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+  });
+
+  it('GET /api/project devuelve 2', async () => {
+    const res = await request(app)
+      .get('/api/project')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.body.projects.length).toBe(2);
+  });
+
+  it('GET /api/project/archived devuelve 1', async () => {
+    const res = await request(app)
+      .get('/api/project/archived')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.body.length).toBe(1);
+  });
+
+  it('Restaura el archivado', async () => {
+    const res = await request(app)
+      .patch(`/api/project/${projectIds[0]}/restore`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+  });
+
+  it('GET /api/project devuelve 3 de nuevo', async () => {
+    const res = await request(app)
+      .get('/api/project')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.body.projects.length).toBe(3);
   });
 
   it('debería crear un proyecto', async () => {
@@ -136,4 +127,9 @@ describe('Project Endpoints', () => {
       .send({ name: '', code: '', address: {}, client: '' });
     expect(res.statusCode).toBe(400);
   });
+
+  afterAll(async () => {
+    await mongoose.connection.close();
+  });
 });
+
