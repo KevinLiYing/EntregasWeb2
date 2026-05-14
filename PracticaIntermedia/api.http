@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3000/api/user
 @contentType = application/json
-@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMDU5MTQ2YzA0MDYxYThiNjdkYTA3NyIsImVtYWlsIjoiYWRtaW43QGVqZW1wbG8uY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc4NzQ5OTIwLCJleHAiOjE3Nzg3NTM1MjB9.nPSpTJg23PEH_N9Gv3lpR0a1ALkFp0IC6dpD9N4uefs
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmMyM2ZhZjJkOTI2MzAzMWY1MTc4MCIsImVtYWlsIjoiYWRtaW40QGVqZW1wbG8uY29tIiwicm9sZSI6Imd1ZXN0IiwiaWF0IjoxNzc4NzUwNDAwLCJleHAiOjE3Nzg3NTQwMDB9.WfoWuNlq6BVNsyGAsBEpEfjZh-0h2ENoXQmZmePDpFY
 @clientId = 69fc273aa76805d91d99f288
 @projectId = 69fc2b36f843e8c01c71c44b
 @deliveryNoteId = 69fc2bb0f843e8c01c71c44c
@@ -19,7 +19,7 @@ POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-  "email": "admin7@ejemplo.com",
+  "email": "admin4@ejemplo.com",
   "password": "supersegura123",
   "name": "Admin",
   "lastName": "Ejemplo",
@@ -31,7 +31,7 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-  "email": "admin7@ejemplo.com",
+  "email": "admin4@ejemplo.com",
   "password": "supersegura123"
 }
 
@@ -41,7 +41,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "code": "355286"
+  "code": "787077"
 }
 
 ### Onboarding datos personales
@@ -173,6 +173,20 @@ Authorization: Bearer {{token}}
 PATCH http://localhost:3000/api/client/{{clientId}}/restore
 Authorization: Bearer {{token}}
 
+### --- SOFT DELETE COHERENTE: CLIENTES ---
+
+### Listar clientes activos (no archivados)
+GET http://localhost:3000/api/client
+Authorization: Bearer {{token}}
+
+### Listar clientes archivados
+GET http://localhost:3000/api/client/archived
+Authorization: Bearer {{token}}
+
+### Restaurar cliente archivado
+PATCH http://localhost:3000/api/client/{{clientId}}/restore
+Authorization: Bearer {{token}}
+
 ### ==========================================
 ### PROYECTOS
 ### ==========================================
@@ -221,6 +235,22 @@ Authorization: Bearer {{token}}
 ### Restaurar proyecto
 PATCH http://localhost:3000/api/project/{{projectId}}/restore
 Authorization: Bearer {{token}}
+
+### --- SOFT DELETE COHERENTE: PROYECTOS ---
+
+### Listar proyectos activos (no archivados)
+GET http://localhost:3000/api/project
+Authorization: Bearer {{token}}
+
+### Listar proyectos archivados
+GET http://localhost:3000/api/project/archived
+Authorization: Bearer {{token}}
+
+### Restaurar proyecto archivado
+PATCH http://localhost:3000/api/project/{{projectId}}/restore
+Authorization: Bearer {{token}}
+
+# Puedes usar estos endpoints tras archivar/restaurar para comprobar el comportamiento esperado.
 
 ### ==========================================
 ### ALBARANES (DELIVERY NOTES)
